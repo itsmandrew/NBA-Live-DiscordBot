@@ -1,2 +1,3 @@
 # Ignore all files in env
 env/
+cred.json
