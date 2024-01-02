@@ -1,4 +1,4 @@
 # Ignore all files in env
-env/
+venv/
 creds.json
 __pycache__/
