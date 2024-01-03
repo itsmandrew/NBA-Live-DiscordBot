@@ -23,6 +23,8 @@ This is running in Python 3.10!
 
 6. If wanting to add the bot to a personal server, request a URL from me.
     - Need to go into Discord applications (https://discord.com/developers/applications)
+    - Go into OAuth2 and into URL generator (bot), perms for the bot
+    - URL should be ready for use
 
 ## Features
 
