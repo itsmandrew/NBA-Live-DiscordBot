@@ -118,7 +118,7 @@ def display_top_players(matchup_player_stats, game_id_to_matchup, top_n=5):
 
 
 
-def build_table_for_matchup(matchup, players, top_n=5):
+def build_table(matchup, players, top_n=5):
     top_players = sorted(players, key=lambda x: x[1], reverse=True)[:top_n]
     table_content = [(player, f"{score:.1f}") for player, score in top_players]
     table = t2a(

@@ -1,17 +1,17 @@
-from discord.ext import commands
-from scripts.daily_script import *
-from scripts.general_functions import *
-from scripts.player_averages_scripts import *
-import discord
+"""
+Discord Bot for fetching and displaying NBA stats.
+"""
+
 import json
 import datetime
-from table2ascii import table2ascii as t2a, PresetStyle
+import discord
+from discord.ext import commands
+from scripts.daily_script import fetch_player_game_logs, group_players_by_matchup, build_table
+from scripts.player_averages_scripts import fetch_player_averages
 
-# Define the path to your JSON file
-file_path = 'creds.json'  # Replace with your actual file path
+FILE_PATH = 'creds.json'  # Replace with your actual file path
 
-# Reading data from the JSON file
-with open(file_path, 'r') as json_file:
+with open(FILE_PATH, 'r', encoding='utf-8') as json_file:
     loaded_data = json.load(json_file)
 
 # Extracting data into variables
@@ -22,31 +22,31 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
-    print("Testing")
+    ''' Initializes the Discord Bot, will print message when ran '''
+    print("Bot is ready.")
     channel = bot.get_channel(CHANNEL_ID)
-
     await channel.send("Salmaan sucks at fantasy")
 
-@bot.command() 
+@bot.command()
 async def stats(ctx):
-    
+    ''' Test function '''
     await ctx.send("Checking stats")
-
 
 @bot.command()
 async def daily(ctx):
+    ''' Returns the top 5 fantasy players from each game 
+    played today based off ESPN's point system '''
     yesterday_str = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     season = "2023-24"
 
     player_stats = fetch_player_game_logs(yesterday_str, yesterday_str, season)
     matchup_player_stats, game_id_to_matchup = group_players_by_matchup(player_stats)
 
-    # Creating a Discord Embed
     embed = discord.Embed(title="NBA Fantasy Points Summary", color=discord.Color.blue())
 
     for game_id, players in matchup_player_stats.items():
         formatted_matchup = game_id_to_matchup[game_id]  # Fetch the matchup string
-        table_str = build_table_for_matchup(formatted_matchup, players)
+        table_str = build_table(formatted_matchup, players)
         embed.add_field(name=f"**{formatted_matchup} ({game_id})**", value=table_str, inline=False)
 
     if not embed.fields:
@@ -56,32 +56,25 @@ async def daily(ctx):
 
 @bot.command()
 async def playerstats(ctx, *args):
-    # Define the current season
+    ''' Takes in a player name as an argument eg. Lebron James, and 
+    returns the current seasons stats for that specific player '''
     current_season = "2023-24"  # Adjust this based on the actual current NBA season
+    player_name = ' '.join([word.capitalize() for word in args])  # Combine to one string
 
-    
-    # Combine all arguments into a single string (player_name)
-    player_name = ' '.join([i.capitalize() for i in args])
-
-
-    # Fetch player averages for the specified player and season
     player_averages = fetch_player_averages(player_name, current_season)
 
     if not player_averages:
-        # No data available
         embed = discord.Embed(
             title=f"No stats available for {player_name} in the {current_season} season.",
             color=0xFF0000  # Red color
         )
     else:
-        # Display player averages in an embedded message
         embed = discord.Embed(
             title=f"{player_name}'s Averages - {current_season} Season",
             color=0x00FF00  # Green color
         )
 
-        # Specify the order in which you want to display the stats
-        stats_order = ["Points", "Rebounds", "Assists", "Steals", "Blocks", "3s per Game", 
+        stats_order = ["Points", "Rebounds", "Assists", "Steals", "Blocks", "3s per Game",
                        "Field Goal Percentage", "Free Throw Percentage", "Turnovers per Game"]
 
         for stat in stats_order:
@@ -92,12 +85,7 @@ async def playerstats(ctx, *args):
                     inline=True
                 )
 
-    # Print player_averages to the terminal
-    print(f"Player Averages for {player_name}:", player_averages)
-
-    # Send the embedded message to the Discord channel
+    # print(f"Player Averages for {player_name}:", player_averages)
     await ctx.send(embed=embed)
-
-
 
 bot.run(BOT_TOKEN)
