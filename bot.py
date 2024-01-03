@@ -1,5 +1,7 @@
 from discord.ext import commands
 from scripts.daily_script import *
+from scripts.general_functions import *
+from scripts.player_averages_scripts import *
 import discord
 import json
 import datetime
@@ -57,8 +59,10 @@ async def playerstats(ctx, *args):
     # Define the current season
     current_season = "2023-24"  # Adjust this based on the actual current NBA season
 
+    
     # Combine all arguments into a single string (player_name)
-    player_name = ' '.join(args)
+    player_name = ' '.join([i.capitalize() for i in args])
+
 
     # Fetch player averages for the specified player and season
     player_averages = fetch_player_averages(player_name, current_season)
