@@ -1,5 +1,5 @@
 from discord.ext import commands
-from daily_script import display_top_players, group_players_by_matchup, fetch_player_game_logs, build_table_for_matchup
+from scripts.daily_script import display_top_players, group_players_by_matchup, fetch_player_game_logs, build_table_for_matchup
 import discord
 import json
 import datetime
