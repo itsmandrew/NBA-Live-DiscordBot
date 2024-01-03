@@ -1,6 +1,7 @@
 # NBA Live Discord Bot
 
 ![NBA-Live Bot Banner](https://github.com/itsmandrew/NBA-Live-DiscordBot/blob/master/static/nba-live-logo.png)
+
 The main functionality is to bring aggregated statistics of real-time NBA game statistics directly into a discord server. 
 This functionality is designed to cater to basketball enthusiasts, sports analysts, and fantasy league players who seek up-to-the-minute information from the NBA world. Looking for aggregated statistics is slow. I wanted to make it more convenient and faster.
 
