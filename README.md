@@ -19,7 +19,7 @@ This is running in Python 3.10!
     NOTE: Need a "creds.json" in directory before running command below
     - ` python bot.py `
 
-    After running command, you can test commands in whichever server.
+    After running command, you can test commands in whichever server the bot is in!
 
 
 ## Features
