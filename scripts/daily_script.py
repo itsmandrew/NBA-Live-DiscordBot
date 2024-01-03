@@ -1,5 +1,5 @@
 import datetime
-from nba_api.stats.endpoints import playergamelogs
+from nba_api.stats.endpoints import playergamelogs, commonallplayers
 from table2ascii import table2ascii as t2a, PresetStyle
 
 
@@ -15,7 +15,10 @@ def fetch_player_game_logs(date_from, date_to, season):
         print(f"Error fetching data: {e}")
         return []
 
+
+
 def group_players_by_matchup(player_stats):
+
     game_id_to_matchup = {}  # Stores the matchup name for each game ID
     matchup_player_stats = {}  # Stores player stats grouped by game ID
 
@@ -63,14 +66,22 @@ def build_table_for_matchup(matchup, players, top_n=5):
 
 # Main execution
 if __name__ == "__main__":
-    yesterday_str = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%m/%d/%Y")
-    season = "2023-24"
+    # yesterday_str = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+    # season = "2023-24"
 
-    # Fetch player game logs
-    player_stats = fetch_player_game_logs(yesterday_str, yesterday_str, season)
+    # # Fetch player game logs
+    # player_stats = fetch_player_game_logs(yesterday_str, yesterday_str, season)
 
-    # Group players by game_id and also get the mapping of game_id to matchup names
-    matchup_player_stats, game_id_to_matchup = group_players_by_matchup(player_stats)
+    # # Group players by game_id and also get the mapping of game_id to matchup names
+    # matchup_player_stats, game_id_to_matchup = group_players_by_matchup(player_stats)
 
-    # Display the top players for each game, along with the matchup names
-    display_top_players(matchup_player_stats, game_id_to_matchup, top_n=5)
+    # # Display the top players for each game, along with the matchup names
+    # display_top_players(matchup_player_stats, game_id_to_matchup, top_n=5)
+    # Provide sample data for testing
+    sample_player_name = "LeBron James"
+    sample_season = "2023-24"
+
+    # Call the function and print the result
+    player_averages = fetch_player_averages(sample_player_name, sample_season)
+    print(f"Averages for {sample_player_name} in {sample_season} season:")
+    print(player_averages)
