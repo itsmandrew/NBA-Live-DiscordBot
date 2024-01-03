@@ -21,6 +21,7 @@ This is running in Python 3.10!
 
     After running command, you can test commands in whichever server the bot is in!
 
+6. If wanting to add the bot to a personal server, request a URL from me.
 
 ## Features
 
