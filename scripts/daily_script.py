@@ -1,9 +1,13 @@
-import datetime
+"""
+Aggregation script to get top fantasy players for the day
+"""
+
 from nba_api.stats.endpoints import playergamelogs, commonallplayers
 from table2ascii import table2ascii as t2a, PresetStyle
 
 
 def fetch_player_game_logs(date_from, date_to, season):
+    ''' Gets the games played by player from certain dates '''
     try:
         player_logs = playergamelogs.PlayerGameLogs(
             date_from_nullable=date_from,
@@ -14,8 +18,9 @@ def fetch_player_game_logs(date_from, date_to, season):
     except Exception as e:
         print(f"Error fetching data: {e}")
         return []
-    
+
 def get_player_id_by_name(full_name):
+    ''' Gets the player id by the name '''
     # Fetch all players
     players_data = commonallplayers.CommonAllPlayers().get_normalized_dict()
 
@@ -31,6 +36,7 @@ def get_player_id_by_name(full_name):
     return None
 
 def fetch_player_averages(player_name, season):
+    ''' Get the player averages, given name and NBA season '''
     try:
         player_logs = playergamelogs.PlayerGameLogs(
             player_id_nullable=get_player_id_by_name(player_name),
@@ -40,7 +46,7 @@ def fetch_player_averages(player_name, season):
 
         if not player_stats:
             return {}
-        
+
         # Print keys for the first game entry
         sample_game_entry = player_stats[0] if player_stats else {}
         print(f"Keys for one game entry: {sample_game_entry.keys()}")
@@ -85,7 +91,8 @@ def fetch_player_averages(player_name, season):
 
 
 def group_players_by_matchup(player_stats):
-
+    ''' Creates the aggregation where we find the best fantasy players based
+     on the current game being played '''
     game_id_to_matchup = {}  # Stores the matchup name for each game ID
     matchup_player_stats = {}  # Stores player stats grouped by game ID
 
@@ -107,6 +114,7 @@ def group_players_by_matchup(player_stats):
 
 
 def display_top_players(matchup_player_stats, game_id_to_matchup, top_n=5):
+    ''' Displays the top N players '''
     for game_id, players in matchup_player_stats.items():
         formatted_matchup = game_id_to_matchup[game_id]
         top_players = sorted(players, key=lambda x: x[1], reverse=True)[:top_n]
@@ -119,6 +127,7 @@ def display_top_players(matchup_player_stats, game_id_to_matchup, top_n=5):
 
 
 def build_table(matchup, players, top_n=5):
+    ''' Builds formatted table for display '''
     top_players = sorted(players, key=lambda x: x[1], reverse=True)[:top_n]
     table_content = [(player, f"{score:.1f}") for player, score in top_players]
     table = t2a(
