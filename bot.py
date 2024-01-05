@@ -7,7 +7,7 @@ import datetime
 import discord
 from discord.ext import commands
 from scripts.daily_script import fetch_player_game_logs, group_players_by_matchup, build_table
-from scripts.player_averages_scripts import fetch_player_averages
+from scripts.player_averages_scripts import fetch_player_averages, fetch_player_stats_recent
 
 FILE_PATH = 'creds.json'  # Replace with your actual file path
 
@@ -25,7 +25,7 @@ async def on_ready():
     ''' Initializes the Discord Bot, will print message when ran '''
     print("Bot is ready.")
     channel = bot.get_channel(CHANNEL_ID)
-    await channel.send("Salmaan sucks at fantasy")
+    # await channel.send("Salmaan sucks at fantasy")
 
 @bot.command()
 async def helpme(ctx):
@@ -106,5 +106,50 @@ async def playerstats(ctx, *args):
 
     # print(f"Player Averages for {player_name}:", player_averages)
     await ctx.send(embed=embed)
+
+@bot.command()
+async def playerstatsrecent(ctx, *args):
+    try:
+        # Combine all words except the last one as the player's name
+        player_name = ' '.join(args[:-1])
+        player_name = ' '.join([word.capitalize() for word in player_name.split()])
+
+        # Extract the last argument as the value of n
+        n = int(args[-1])
+
+        # Fetch recent game stats for the player
+        player_stats_recent = fetch_player_stats_recent(player_name, n, "2023-24")
+
+        # Create a Discord Embed
+        embed = discord.Embed(
+            title=f"Recent Game Stats for {player_name}",
+            description=f"Last {n} games in the 2023-24 season",
+            color=discord.Color.green()
+        )
+
+        # Add a field for each individual game
+        for game in player_stats_recent:
+            game_title = game['Date']
+            game_table = f"```PTS: {game['PTS']}, REB: {game['REB']}, AST: {game['AST']}, "
+            game_table += f"STL: {game['STL']}, BLK: {game['BLK']}, 3PM: {game['3PM']}, "
+            game_table += f"FGM/FGA: {game['FGM']}/{game['FGA']}, "
+            game_table += f"FTM/FTA: {game['FTM']}/{game['FTA']}, TO: {game['TO']}```"
+
+            # Add the game table as a field in the Embed
+            embed.add_field(
+                name=game_title,
+                value=game_table,
+                inline=False
+            )
+
+        # Send the Embed to the Discord channel
+        await ctx.send(embed=embed)
+
+    except ValueError as e:
+        await ctx.send(f"Error: {e}")
+
+
+
+
 
 bot.run(BOT_TOKEN)
