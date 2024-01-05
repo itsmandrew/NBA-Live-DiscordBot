@@ -28,9 +28,9 @@ async def on_ready():
     await channel.send("Salmaan sucks at fantasy")
 
 @bot.command()
-async def helpme(ctx):
+async def commands(ctx):
     ''' Displays information about available bot commands '''
-    help_message = "**Available Commands:**\n\n"
+    help_message = "**Available Commands:**\n"
 
     for command in bot.commands:
         # Exclude the default !help command
