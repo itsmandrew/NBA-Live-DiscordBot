@@ -28,6 +28,25 @@ async def on_ready():
     await channel.send("Salmaan sucks at fantasy")
 
 @bot.command()
+async def commands(ctx):
+    ''' Displays information about available bot commands '''
+    help_message = "**Available Commands:**\n"
+
+    for command in bot.commands:
+        # Exclude the default !help command
+        if command.name != 'help':
+            help_message += f"**!{command.name}:** {command.callback.__doc__}\n"
+
+    await ctx.send(help_message)
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandError):
+        await ctx.send(f"Error: {error}")
+
+
+@bot.command()
 async def stats(ctx):
     ''' Test function '''
     await ctx.send("Checking stats")
@@ -35,7 +54,7 @@ async def stats(ctx):
 @bot.command()
 async def daily(ctx):
     ''' Returns the top 5 fantasy players from each game 
-    played today based off ESPN's point system '''
+    played today based off ESPN's point system'''
     yesterday_str = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     season = "2023-24"
 
