@@ -34,3 +34,4 @@ Right now one of the main features is:
 
 !daily - returns the "top 5 fantasy players (most points based off ESPN's system)"  for each game played on the current date
 
+what
