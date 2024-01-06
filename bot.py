@@ -25,19 +25,28 @@ async def on_ready():
     ''' Initializes the Discord Bot, will print message when ran '''
     print("Bot is ready.")
     channel = bot.get_channel(CHANNEL_ID)
-    # await channel.send("Salmaan sucks at fantasy")
+    await channel.send("Salmaan sucks at fantasy")
+
 
 @bot.command()
 async def helpme(ctx):
-    ''' Displays information about available bot commands '''
-    help_message = "**Available Commands:**\n\n"
+    ''' Displays information about available bot commands in a table format '''
+    help_message = "**Available Commands:**\n"
 
+    # Create a Discord Embed
+    embed = discord.Embed(
+        title="Bot Commands",
+        color=discord.Color.blue()
+    )
+
+    # Add fields to the Embed for each command in a table-like format
     for command in bot.commands:
         # Exclude the default !help command
         if command.name != 'help':
-            help_message += f"**!{command.name}:** {command.callback.__doc__}\n"
+            embed.add_field(name=f"!{command.name}", value=command.callback.__doc__, inline=False)
 
-    await ctx.send(help_message)
+    await ctx.send(embed=embed)
+
 
 
 @bot.event
@@ -51,10 +60,13 @@ async def stats(ctx):
     ''' Test function '''
     await ctx.send("Checking stats")
 
+
 @bot.command()
 async def daily(ctx):
-    ''' Returns the top 5 fantasy players from each game 
-    played today based off ESPN's point system'''
+    '''
+    Returns the top 5 fantasy players from each game played today based off ESPN's point system.
+    
+    Syntax: !daily'''
     yesterday_str = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     season = "2023-24"
 
@@ -73,10 +85,14 @@ async def daily(ctx):
 
     await ctx.send(embed=embed)
 
+
 @bot.command()
 async def playerstats(ctx, *args):
-    ''' Takes in a player name as an argument eg. Lebron James, and 
-    returns the current seasons stats for that specific player '''
+    '''
+    Takes in a player name as an argument (e.g., LeBron James) and 
+    returns the current season's stats for that specific player.
+    
+    Syntax: !playerstats <Player Name>'''
     current_season = "2023-24"  # Adjust this based on the actual current NBA season
     player_name = ' '.join([word.capitalize() for word in args])  # Combine to one string
 
@@ -104,11 +120,15 @@ async def playerstats(ctx, *args):
                     inline=True
                 )
 
-    # print(f"Player Averages for {player_name}:", player_averages)
     await ctx.send(embed=embed)
+
 
 @bot.command()
 async def playerstatsrecent(ctx, *args):
+    '''
+    Takes in a player name and a number 'n' to fetch recent game stats for that player.
+    
+    Syntax: !playerstatsrecent <Player Name> <Number of Games>'''
     try:
         # Combine all words except the last one as the player's name
         player_name = ' '.join(args[:-1])
@@ -142,7 +162,6 @@ async def playerstatsrecent(ctx, *args):
                 inline=False
             )
 
-        # Send the Embed to the Discord channel
         await ctx.send(embed=embed)
 
     except ValueError as e:
